@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 audio.mp4
+.env
