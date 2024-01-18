@@ -17,7 +17,6 @@ export async function execute(interaction: CommandInteraction) {
     if (!interaction.guildId) {
         return interaction.reply("Something went really, really wrong.");
     }
-
     const url = interaction.options.getString("link");
     const connection = getVoiceConnection(interaction.guildId);
 
