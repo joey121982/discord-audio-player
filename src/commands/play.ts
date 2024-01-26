@@ -1,8 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import { getVoiceConnection, createAudioPlayer, createAudioResource, NoSubscriberBehavior } from '@discordjs/voice';
-import { join } from "path";
-import ytdl from 'ytdl-core';
-import fs from 'fs';
+import { getVoiceConnection, createAudioPlayer, createAudioResource, NoSubscriberBehavior } from "@discordjs/voice";
+import play from "play-dl";
 
 export const data = new SlashCommandBuilder()
     .addStringOption(option =>
@@ -26,22 +24,13 @@ export async function execute(interaction: CommandInteraction) {
 
     const audioplayer = createAudioPlayer({
         behaviors: {
-            noSubscriber: NoSubscriberBehavior.Pause,
+            noSubscriber: NoSubscriberBehavior.Play,
         },
     });
 
-    const download = ytdl(url, { filter: 'audioonly' });
-    const writestream = fs.createWriteStream('audio.mp4');
-    const pathtoresource = join('audio.mp4');
-    // console.log(pathtoresource);
-
-    download.pipe(writestream);
-
-    const resource = createAudioResource(pathtoresource, {
-        inlineVolume: true,
-        metadata: {
-            title: "SONG",
-        },
+    let stream = await play.stream(url);
+    const resource = createAudioResource(stream.stream, {
+        inputType: stream.type
     });
 
     audioplayer.play(resource);
